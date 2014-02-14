@@ -6,6 +6,9 @@ public class PercolationStats {
     
     public PercolationStats(int N, int T)
     {
+        if (N <= 0 || T <= 0)
+            throw new java.lang.IllegalArgumentException("Invalid params");
+        
         this.T = T;
         int points = N*N;
         double[] samples = new double[T];
@@ -28,7 +31,9 @@ public class PercolationStats {
         }
 
         this.meanValue = StdStats.mean(samples);
-        this.stdevValue = StdStats.stddev(samples);
+        this.stdevValue = Double.NaN;
+        if (T > 1)
+            this.stdevValue = StdStats.stddev(samples);
     }
 
     public double mean()
