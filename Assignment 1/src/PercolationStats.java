@@ -8,19 +8,23 @@ public class PercolationStats {
     {
         this.T = T;
         int points = N*N;
-        int[] samples = new int[T];
-        for (int sim = 0; sim < N; ++sim)
+        double[] samples = new double[T];
+        for (int sim = 0; sim < T; ++sim)
         {
             int attempt = 0;
             Percolation percolation = new Percolation(N);
-            while (!percolation.percolates())
+            while (!percolation.percolates() && attempt < points)
             {
-                int i = StdRandom.uniform(1, N + 1);
-                int j = StdRandom.uniform(1, N + 1);
+                int i, j;
+                do {
+                    i = StdRandom.uniform(1, N + 1);
+                    j = StdRandom.uniform(1, N + 1);
+                } while (percolation.isOpen(i, j));
                 percolation.open(i, j);
                 ++attempt;
             }
-            samples[sim] = attempt/points;
+            
+            samples[sim] = ((double) attempt)/points;
         }
 
         this.meanValue = StdStats.mean(samples);
@@ -56,7 +60,5 @@ public class PercolationStats {
         StdOut.println(String.format("%24s = %f", "stddev", stats.stddev()));
         StdOut.println(String.format("%24s = %f, %f", "95% confidence interval", 
                 stats.confidenceLo(), stats.confidenceHi()));
-        
-        StdIn.readLine();
-    }    
+    }
 }

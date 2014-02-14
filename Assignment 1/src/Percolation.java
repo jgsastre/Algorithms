@@ -16,7 +16,7 @@ public class Percolation {
 
     public void open(int i, int j)
     {
-        if (this.isFull(i, j))
+        if (!this.isOpen(i, j))
         {
             int index = this.xyTo1D(i, j);
             this.openPoints[index] = true;
@@ -36,13 +36,12 @@ public class Percolation {
         return this.openPoints[this.xyTo1D(i, j)];
     }
 
-    public boolean isFull(int i, int j)    // is site (row i, column j) full?
+    public boolean isFull(int i, int j)
     {
-        boolean isOpen = !this.isOpen(i, j);
-        return isOpen && this.quickUnion.connected(this.xyTo1D(i, j), 0);
+        return this.isOpen(i, j) && this.quickUnion.connected(this.xyTo1D(i, j), 0);
     }
 
-    public boolean percolates()            // does the system percolate?
+    public boolean percolates()
     {
         return this.quickUnion.connected(0, this.max1D);
     }
