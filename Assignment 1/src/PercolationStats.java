@@ -1,5 +1,5 @@
 public class PercolationStats {
-    private final double normPercentil = 1.96;
+    private static final double NORM_PERCENTIL = 1.96;
     private double meanValue;
     private double stdevValue;
     private int T;
@@ -48,12 +48,12 @@ public class PercolationStats {
 
     public double confidenceLo()
     {
-        return this.mean() - this.normPercentil*this.stddev()/Math.sqrt(this.T);
+        return this.mean() - NORM_PERCENTIL*this.stddev()/Math.sqrt(this.T);
     }
 
     public double confidenceHi()
     {
-        return this.mean() + this.normPercentil*this.stddev()/Math.sqrt(this.T);
+        return this.mean() + NORM_PERCENTIL*this.stddev()/Math.sqrt(this.T);
     }
 
     public static void main(String[] args)
