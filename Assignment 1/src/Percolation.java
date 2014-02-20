@@ -1,17 +1,18 @@
 public class Percolation {
     private WeightedQuickUnionUF quickUnion;
     private boolean[] openPoints;
+    private boolean[] bottomConnectedPoints;
     private int N;
     private int max1D;  
     
     public Percolation(int N)
     {
         this.N = N;
-        this.max1D = N*N + 1;
+        this.max1D = N*N;
         this.quickUnion = new WeightedQuickUnionUF(this.max1D + 1);
         this.openPoints = new boolean[this.max1D + 1];
+        this.bottomConnectedPoints = new boolean[this.max1D + 1];
         this.openPoints[0] = true;
-        this.openPoints[this.max1D] = true;
     }
 
     public void open(int i, int j)
@@ -21,8 +22,12 @@ public class Percolation {
             int index = this.xyTo1D(i, j);
             this.openPoints[index] = true;
 
+            if (i == N)
+                // Suppose find(index(i, j)) = index(i, j)
+                this.bottomConnectedPoints[index] = true;
+            else
+                this.connectWithNeighbor(index, i + 1, j);
             this.connectWithNeighbor(index, i - 1, j);
-            this.connectWithNeighbor(index, i + 1, j);
             if (j > 1)
                 this.connectWithNeighbor(index, i, j - 1);
             if (j < N)
@@ -43,7 +48,7 @@ public class Percolation {
 
     public boolean percolates()
     {
-        return this.quickUnion.connected(0, this.max1D);
+        return this.bottomConnectedPoints[this.quickUnion.find(0)];
     }
 
     private void checkIndices(int i, int j)
@@ -64,7 +69,12 @@ public class Percolation {
         int newIndex = this.xyTo1D(i, j);
         if (this.openPoints[newIndex])
         {
+            int rootId = quickUnion.find(newIndex);
+            boolean bottomConnected = this.bottomConnectedPoints[index];
+            bottomConnected = bottomConnected || this.bottomConnectedPoints[rootId];
             this.quickUnion.union(index, newIndex);
+            this.bottomConnectedPoints[rootId] = bottomConnected;
+            this.bottomConnectedPoints[index] = bottomConnected;
         }
     }
 }
